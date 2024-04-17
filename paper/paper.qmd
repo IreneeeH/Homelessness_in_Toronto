@@ -6,7 +6,12 @@ thanks: "Code and data are available at: LINK."
 date: today
 date-format: long
 abstract: "Toronto’s shelter system and homeless population has experienced a significant increase over recent years. Using Toronto’s shelter system data and deaths of people experiencing homelessness data from the City of Toronto's Open Data Portal, this paper analyzes when deaths most frequently occur in Toronto’s homeless population and the trends of different demographics that utilized shelters from 2018 to 2023. This paper studies the month of death of unhoused individuals, the age group that visits shelters the most, the trend of the average number of individuals who are actively homeless using shelters, the average number of people who return to shelters after acquiring housing, and the gap separating the average number of male and female shelter users from 2018 to 2023. This paper finds that deaths of unhoused individuals occur most frequently in January. Additionally, males and individuals aged 25 to 44 account for a significantly larger portion of shelter users. This study may be employed to inform policy makers of the demographic most at risk of homelessness and of where to target solutions for tackling the underlying issue of homelessness in Toronto."
-format: pdf
+format: 
+  pdf:
+    fig-pos: 'H'
+header-includes:
+  - \usepackage{float} 
+  - \floatplacement{table}{H}
 number-sections: true
 bibliography: references.bib
 ---
@@ -17,6 +22,9 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
+library(dplyr)
+
+cleaned_toronto_shelters_data <- read_csv("../data/analysis_data/cleaned_toronto_shelters_data.csv")
 ```
 
 
@@ -35,10 +43,10 @@ and processing of Toronto shelter system and deaths of unhoused individuals data
 # Data {#sec-data}
 
 ## Sources
-The data utilized in this paper was retrieved from the City of Toronto's Open Data Portal [@opendatatoronto]. The statistical programming language R was used to retrieve, clean, and process the data [@citeR]. In particular, the following R packages were used: opendatatoronto [@opendatatoronto] and tidyverse [@tidyverse] for data acquisition, janitor [@janitor] and knitr [@knitr] for data cleaning and processing, and ggplot2 [@ggplot2] for creating figures.
+The data utilized in this paper was retrieved from the City of Toronto's Open Data Portal [@opendatatoronto]. The statistical programming language R was used to retrieve, clean, and process the data [@citeR]. In particular, the following R packages were used: `opendatatoronto` [@opendatatoronto], `tidyverse` [@tidyverse], and `dplyr` [@dplyr] for data acquisition; `janitor` [@janitor] and `arrow` [@arrow] for data cleaning and processing; `rstanarm` [@rstanarm] and `marginaleffects` [@marginaleffects] for modeling; and `ggplot2` [@ggplot2] for creating figures.
 
 ## Toronto Shelter System Data
-The shelter system data acquired from the City of Toronto's Open Data Portal provided monthly statistics of Toronto's shelters from January 2018 to December 2023. For each month, the data set included information for the entire population, chronic visitors, refugees, families, youth, single adults, and non-refugees. The information of interest for each of those demographics are the number of individuals that returned to shelters after previously acquiring housing, those that are new to the shelter system, those that are actively homeless, those that identify as male and female, and the number of individuals in each age group in that demographic. The age groups consist of visitors under 16, 16 to 24, 25 to 44, 45 to 64, and 65 years of age or older. These 
+The shelter system data acquired from the City of Toronto's Open Data Portal provided monthly statistics of Toronto's shelters from January 2018 to December 2023. For each month, the data set included information for the entire population, chronic visitors, refugees, families, youth, single adults, and non-refugees. The information of interest for each of those demographics are the number of individuals that returned to shelters after previously acquiring housing, those that are new to the shelter system, those that are actively homeless, those that identify as male and female, and the number of individuals in each age group in that demographic. The age groups consist of visitors under 16, 16 to 24, 25 to 44, 45 to 64, and 65 years of age or older.
 
 ## Deaths of People Experiencing Homelessness Data
 The death count for individuals experiencing homelessness data acquired from the City of Toronto’s Open Data Portal provided monthly statistics of deaths from January 2017 to June 2023.
@@ -50,37 +58,25 @@ The City of Toronto’s Open Data Portal is Toronto's official source for city d
 
 # Model
 
-The goal of our modelling strategy is twofold. Firstly,...
-
-Here we briefly describe the Bayesian analysis model used to investigate... Background details and diagnostics are included in [Appendix -@sec-model-details].
+The goal of my modelling strategy is to utilize the Poisson distribution to build a Poisson regression model as the data is concerned with count data and $\lambda$ distributes probabilities over non-negative integers.
 
 ## Model set-up
 
-Define $y_i$ as the number of seconds that the plane remained aloft. Then $\beta_i$ is the wing width and $\gamma_i$ is the wing length, both measured in millimeters.  
+Define $y_i$ as the number of deaths and the explanatory variable as the month. I am interested in how the number of deaths differs by month.
 
 \begin{align} 
-y_i|\mu_i, \sigma &\sim \mbox{Normal}(\mu_i, \sigma) \\
-\mu_i &= \alpha + \beta_i + \gamma_i\\
-\alpha &\sim \mbox{Normal}(0, 2.5) \\
-\beta &\sim \mbox{Normal}(0, 2.5) \\
-\gamma &\sim \mbox{Normal}(0, 2.5) \\
-\sigma &\sim \mbox{Exponential}(1)
+y_i|\lambda_i &\sim \mbox{Poisson}(\lambda_i) \\
+\mbox{log}(\lambda_i) &= \beta_0 + \beta_1 \times \mbox{Month}_i\\
+\beta_0 &\sim \mbox{Normal}(0, 2.5) \\
+\beta_1 &\sim \mbox{Normal}(0, 2.5) \\
 \end{align}
 
-We run the model in R [@citeR] using the `rstanarm` package of @rstanarm. We use the default priors from `rstanarm`.
-
-
-### Model justification
-
-We expect a positive relationship between the size of the wings and time spent aloft. In particular...
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
+I run the model in R [@citeR] using the `rstanarm` package of @rstanarm. I use the default priors from `rstanarm`.
 
 
 # Results
 
-Our results are summarized in @tbl-modelresults.
-
+## Relationship Between Deaths of Homeless Individuals and Months
 ```{r}
 #| echo: false
 #| warning: false
@@ -95,7 +91,7 @@ first_model <-
 
 ```{r}
 #| label: tbl-modelresults
-#| tbl-cap: "Examining the number of e/E's as the number of words increase"
+#| tbl-cap: "Examining the number of deaths of homeless individuals occuring in each month"
 #| tbl-pos: H
 #| echo: false
 #| warning: false
@@ -110,31 +106,189 @@ modelsummary::modelsummary(
 )
 ```
 
+## Relationship Between Deaths of Homeless Individuals and Months
+@tbl-modelresultsslopes helps with interpreting the model results in @tbl-modelresults. @tbl-modelresultsslopes suggests that in our dataset, compared to April, August tends to have around three additional deaths, December tends to have around two additional deaths, February tends to have one additional death, and so on. Most notably, compared to April, January tends to have five additional deaths–the most additional deaths out of all the months; July tends to have around four additional deaths–the second most additional deaths out of all the months; and March tends to have one less death–the least amount of additional deaths out of all the months.
+
 ```{r}
-#| label: fig-modelresultsfig
-#| fig-cap: "The predicted number of e/E's in each line based on the number of words"
+#| label: tbl-modelresultsslopes
+#| tbl-cap: "The estimated difference in the number of deaths of homeless indivuals in each month"
+#| tbl-pos: H
 #| echo: false
 #| warning: false
 #| eval: true
 
+library(knitr)
 library(marginaleffects)
 
-plot_predictions(first_model, condition = "month_of_death") +
-  labs(x = "Month",
-       y = "Number of Actively Homeless") +
-  theme_classic()
+slopes(first_model) |>
+  select(contrast, estimate) |>
+  unique() |> 
+  kable(
+    col.names = c("Compare month", "Estimate"),
+    digits = 2, booktabs = TRUE, linesep = ""
+  )
 ```
 
+```{r}
+#| label: fig-modelresultsfig
+#| fig-cap: "The predicted number deaths of homeless individuals based on the month"
+#| echo: false
+#| warning: false
+#| eval: true
+
+#library(marginaleffects)
+
+#plot_predictions(first_model, condition = "month_of_death") +
+#  labs(x = "Month",
+#       y = "Number of Deaths") +
+#  theme_classic()
+```
+
+## Average Number of Indivduals for each Age Group
+
+@fig-agegroupavg demonstrates that individuals age 25 to 44 enter shelters the most on average, followed by individuals age 45 to 64, then those under 16 and those age 16 to 24. Additionally, individuals 65 and over enter shelters the least on average. This result is expected as the cost of living in Toronto has risen significantly in recent years and individuals age 25 to 44 must have a large percentage of their income allotted to rent [@cbcliving]. This quota may be difficult to reach every month as the price of other necessities have also risen, such as grocery bills. Individuals over 65 may not choose to stay in shelters as they have other options, including retirement homes and elder care centres.
+```{r}
+#| label: fig-agegroupavg
+#| fig-cap: "The average of all shelter visitors in each age group over 6 years from 2018 to 2023"
+#| echo: false
+#| warning: false
+#| message: false
+
+age_group_data <-  cleaned_toronto_shelters_data|>
+    filter(population_group == "All Population") |>
+  summarise(
+    # Divide by (6*12) since it is 6 years (2018-2023) with 12 months each
+    "Under 16" = sum(age_under16, na.rm = TRUE)/(6*12), 
+    "16-24" = sum(age_16_24, na.rm = TRUE)/(6*12),  
+    "25-44" = sum(age_25_44, na.rm = TRUE)/(6*12),   
+    "45-64" = sum(age_45_64, na.rm = TRUE)/(6*12), 
+    "65+" = sum(age_65over, na.rm = TRUE)/(6*12)
+  ) |>
+  pivot_longer(cols = everything(), names_to = "age_group", values_to = "average")
+
+# Create the bar graph
+ggplot(age_group_data, aes(x = age_group, y = average, fill = age_group)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Age Group",
+       y = "Average")
+```
+
+## Average Number of Actively Homeless Indivduals
+
+@fig-activelyhomeless demonstrates that the average number of actively homeless individuals increased from 2018 to 2019, significantly decreased from 2019 to 2020, remained almost unchanged from 2020 to 2021, experienced a sharp increase from 2021 to 2022, and increased more from 2022 to 2023. Additionally, the average in 2023 reached a high of almost 10500 actively homeless individuals. The housing crisis and spike in the cost of living since the COVID-19 pandemic is a notable contributing factor to the increase in homelessness and shelter usage after 2021. The significant decrease in the average number of actively homeless individuals using shelters from 2019 to 2021 can also be attributed to the pandemic: many public areas were restricted or fully closed for physical distancing purposes.
+```{r}
+#| label: fig-activelyhomeless
+#| fig-cap: "The average number of actively homeless people from 2018 to 2023"
+#| echo: false
+#| warning: false
+#| message: false
+
+avgs_actively_homeless <- rep(NA, times=6) # 6 years (2018 to 2023)
+year = 18
+for (i in 1:6){
+  each_year_actively_homeless <- cleaned_toronto_shelters_data |>
+    filter(population_group == "All Population", substring(date, 5, 6) == as.character(year)) |>
+    select(actively_homeless)
+
+  avgs_actively_homeless[i] <- sum(each_year_actively_homeless)/12 # 12 months in a year
+  
+  year = year + 1
+}
+
+avgs_actively_homeless_data <-
+  tibble(
+    date = 2018:2023,
+    avg = avgs_actively_homeless
+  )
+
+ggplot(avgs_actively_homeless_data, aes(x = date, y = avg, fill = date)) +
+  geom_line(stat = "identity") +
+  labs(x = "Year",
+       y = "Average")
+```
+
+## Average Number of Shelter Returners
+
+@fig-returnedfromhousingavg illustrates that the average number of individuals who return to shelters each year increased each year from 2018 to 2021, then the average began to decrease from 2021 to 2022 and significantly declined from 2022 to 2023. In addition, less than 60 individuals returned to a shelter in 2023. This outcome is surprising as it was expected to find that after acquiring housing, many would return to shelters due to the rise of rental prices and the overall housing and cost of living crisis in recent years. Additionally, @fig-activelyhomeless demonstrates the significant increase in homeless individuals. A reason that can explain why many homeless people who acquire housing and become homeless again but do not return to shelters is that more individuals are experiencing homelessness; thus, shelter capacity is quickly filling up and many returning visitors are being turned away [@cbcshelters].
+
+```{r}
+#| label: fig-returnedfromhousingavg
+#| fig-cap: "The average of number of visitors who returned to shelters from 2018 to 2023"
+#| echo: false
+#| warning: false
+#| message: false
+
+avgs_returned <- rep(NA, times=6) # 6 years (2018 to 2023)
+year = 18
+for (i in 1:6){
+  each_returned_from_housing <- cleaned_toronto_shelters_data |>
+    filter(population_group == "All Population", substring(date, 5, 6) == as.character(year)) |>
+    select(returned_from_housing)
+
+  avgs_returned[i] <- sum(each_returned_from_housing)/12 # 12 months in a year
+  
+  year = year + 1
+}
+
+avgs_returned_data <-
+  tibble(
+    date = 2018:2023,
+    avg = avgs_returned
+  )
+
+ggplot(avgs_returned_data, aes(x = date, y = avg, fill = date)) +
+  geom_line(stat = "identity") +
+  labs(x = "Year",
+       y = "Average")
+```
+
+## Average Number of Males and Females
+
+There is an average of over 5000 male individuals in shelters each year (blue); whereas for female individuals (red), there is an average of less than 4000. @fig-malefemale illustrates how every year, the average number of male shelter users is significantly higher than that of female users. Additionally, from 2020 to 2021, the average number of male shelter users increased while the average number of female shelter users decreased. In regards to other annual intervals, the average for males and females both increase from 2018 to 2019, decrease from 2019 to 2020, and increase from 2021 to 2023.
+
+```{r}
+#| label: fig-malefemale
+#| fig-cap: "The average of male and female shelter visitors from 2018 to 2023"
+#| echo: false
+#| warning: false
+#| message: false
+
+avgs_male <- rep(NA, times=6) # 6 years (2018 to 2023)
+avgs_female <- rep(NA, times=6)
+year = 18
+for (i in 1:6){
+  each_year_male <- cleaned_toronto_shelters_data |>
+    filter(population_group == "All Population", substring(date, 5, 6) == as.character(year)) |>
+    select(gender_male)
+  
+  each_year_female <- cleaned_toronto_shelters_data |>
+    filter(population_group == "All Population", substring(date, 5, 6) == as.character(year)) |>
+    select(gender_female)
+
+  avgs_male[i] <- sum(each_year_male)/12 # 12 months in a year
+  avgs_female[i] <- sum(each_year_female)/12
+  
+  year = year + 1
+}
+
+avgs_gender_data <-
+  tibble(
+    date = 2018:2023,
+    avg_males = avgs_male,
+    avg_females = avgs_female
+  )
+
+ggplot(avgs_gender_data, aes(x=date)) +
+  geom_line(aes(y = avg_males), color="blue") +
+  geom_line(aes(y = avg_females), color="red")+
+  labs(x = "Year",
+       y = "Average")
+```
 
 # Discussion
 
-## First discussion point {#sec-first-point}
+## First discussion point
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
-
-## Second discussion point
-
-## Third discussion point
 
 ## Weaknesses and next steps
 

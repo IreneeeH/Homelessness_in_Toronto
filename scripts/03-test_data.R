@@ -21,9 +21,9 @@ deaths_test$year_of_death %in% c(2017, 2018, 2019, 2020, 2021, 2022, 2023)
 
 # Checking that the only months involved are "January", "February", "March", "April", 
 # "May", "June", "July", "August", "September", "October", "November", and "December"
-deaths_test$month_of_death %in% c("January", "February", "March", "April", 
-                                   "May", "June", "July", "August", "September", 
-                                   "October", "November", "December")
+deaths_test$month_of_death %in% c("Jan", "Feb", "Mar", "Apr", 
+                                   "May", "Jun", "Jul", "Aug", "Sep", 
+                                   "Oct", "Nov", "Dec")
 
 # Checking the classes of the columns
 deaths_test$year_of_death |> class() == "numeric"

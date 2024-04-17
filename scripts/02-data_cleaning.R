@@ -59,6 +59,14 @@ cleaned_homeless_deaths_data <-
   filter(month_of_death != "Unknown") |>
   select(year_of_death, month_of_death, count)
 
+months = c("January", "February", "March", "April", "May", "June", "July", "August", "September",
+           "October", "November", "December")
+
+# Rename all months to only the first three letters of the month
+for (i in 1:12){
+  cleaned_homeless_deaths_data$month_of_death[cleaned_homeless_deaths_data$month_of_death==months[i]] <- substring(months[i], 1, 3)
+}
+
 
 #### Save homeless deaths data ####
 write_csv(cleaned_homeless_deaths_data, "data/analysis_data/cleaned_homeless_deaths_data.csv")
