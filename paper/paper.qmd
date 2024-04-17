@@ -1,13 +1,11 @@
 ---
 title: "My title"
-subtitle: "My subtitle if needed"
 author: 
-  - First author
-  - Another author
+  - Irene Huynh
 thanks: "Code and data are available at: LINK."
 date: today
 date-format: long
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Toronto’s shelter system and homeless population has experienced a significant increase over recent years. Using Toronto’s shelter system data and deaths of people experiencing homelessness data from the City of Toronto's Open Data Portal, this paper analyzes when deaths most frequently occur in Toronto’s homeless population and the trends of different demographics that utilized shelters from 2018 to 2023. This paper studies the month of death of unhoused individuals, the age group that visits shelters the most, the trend of the average number of individuals who are actively homeless using shelters, the average number of people who return to shelters after acquiring housing, and the gap separating the average number of male and female shelter users from 2018 to 2023. This paper finds that deaths of unhoused individuals occur most frequently in January. Additionally, males and individuals aged 25 to 44 account for a significantly larger portion of shelter users. This study may be employed to inform policy makers of the demographic most at risk of homelessness and of where to target solutions for tackling the underlying issue of homelessness in Toronto."
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -19,58 +17,34 @@ bibliography: references.bib
 #| message: false
 
 library(tidyverse)
-library(palmerpenguins)
 ```
 
 
 # Introduction
 
-You can and should cross-reference sections and sub-sections. We use @citeR and @rohan.
+Toronto’s shelter system provides a temporary home to those who are in need of one. The system is essential for Toronto’s homeless population and refugees as the shelters uphold standards that support meals and laundry accommodations, mental health and harm reduction services, and a host of counselors to direct and aid individuals acquire permanent housing. Although the shelters provide a multitude of services and aid to secure permanent housing for the unhoused, there are still many who return to shelters after securing housing [@torontoshelters].
 
-The remainder of this paper is structured as follows. @sec-data....
+The affordable housing crisis is directly contributing to Toronto’s shelter availability crisis. As Toronto’s housing market has skyrocketed in the past few years, it is no wonder why Toronto’s shelters are receiving significantly more visitors. The City of Toronto states that, “One in three of Toronto’s homeowner and renter households (373,965 households or 32 per cent) experienced affordability issues,” [@cityToronto]. According to CBC News, an estimated average of at least 273 individuals were turned away from shelters in June 2023, which was a record high for Toronto shelters [@cbcshelters]. The amount of families seeking warm beds has been unmatched and as Toronto’s winters can be extremely frigid, shelter availability is becoming increasingly more critical. Moreover, as temperatures continue to reach record highs as a consequence of climate change, Toronto’s summers become increasingly more hazardous for unhoused individuals.
 
+Analyzing and studying Toronto’s shelter system data can reveal those within society that are struggling the most with securing housing. This paper analyzes the demographics that utilize Toronto’s shelter system and the month of deaths of unhoused individuals. Analyzing different age groups that utilize shelters are of particular interest to produce a predictive model that determines whether specific months impact the likelihood of death in Toronto’s homeless population. In addition, this paper is also concerned with the actively homeless population and different demographics, such as refugees and single adults, that stay in shelters. The main estimand of this study is the effect of months on deaths in individuals experiencing homelessness in Toronto. This paper finds that the largest demographic of shelter users are males and individuals aged 25 to 44, and the death of people experiencing homelessness occurs most frequently in January.
+
+The remainder of this paper is structured as follows: the Data section details the collection
+and processing of Toronto shelter system and deaths of unhoused individuals data. Additionally, the section includes discussion on the measurement of the original dataset and the variables examined in this study. The following Models section discusses the regression model used and the Results section displays the tables and figures that model the data. The Discussion section draws conclusions from those tables and figures and details the importance of my findings and weaknesses of the paper.
 
 
 # Data {#sec-data}
 
-Some of our data is of penguins (@fig-bills), from @palmerpenguins.
+## Sources
+The data utilized in this paper was retrieved from the City of Toronto's Open Data Portal [@opendatatoronto]. The statistical programming language R was used to retrieve, clean, and process the data [@citeR]. In particular, the following R packages were used: opendatatoronto [@opendatatoronto] and tidyverse [@tidyverse] for data acquisition, janitor [@janitor] and knitr [@knitr] for data cleaning and processing, and ggplot2 [@ggplot2] for creating figures.
 
-```{r}
-#| label: fig-bills
-#| fig-cap: Bills of penguins
-#| echo: false
+## Toronto Shelter System Data
+The shelter system data acquired from the City of Toronto's Open Data Portal provided monthly statistics of Toronto's shelters from January 2018 to December 2023. For each month, the data set included information for the entire population, chronic visitors, refugees, families, youth, single adults, and non-refugees. The information of interest for each of those demographics are the number of individuals that returned to shelters after previously acquiring housing, those that are new to the shelter system, those that are actively homeless, those that identify as male and female, and the number of individuals in each age group in that demographic. The age groups consist of visitors under 16, 16 to 24, 25 to 44, 45 to 64, and 65 years of age or older. These 
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
-```
+## Deaths of People Experiencing Homelessness Data
+The death count for individuals experiencing homelessness data acquired from the City of Toronto’s Open Data Portal provided monthly statistics of deaths from January 2017 to June 2023.
 
-Talk more about it.
-
-And also planes (@fig-planes). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work well once you have enough text.)
-
-```{r}
-#| label: fig-planes
-#| fig-cap: Relationship between wing length and width
-#| echo: false
-#| warning: false
-#| message: false
-
-analysis_data <- read_csv(here::here("data/analysis_data/analysis_data.csv"))
-
-analysis_data |> 
-  ggplot(aes(x = width, y = length)) +
-  geom_point(alpha = 0.8) +
-  theme_minimal() +
-  labs(x = "Wing width (mm)",
-       y = "Wing length (mm)")
-```
-
-Talk way more about it. 
+## Measurement
+The City of Toronto’s Open Data Portal is Toronto's official source for city data relating to each of its divisions and agencies. Thus, the quality of the data used in this study is reliable; however, the Portal does state that there were limitations to the data sets. For the Toronto shelter system data, a limitation or possible avenue for measurement error for the data is that the data excludes individuals who do not sleep in shelters or who use other resources for shelter, such as public infrastructure and buildings open all hours  [@torontosheltersystemflow]. Additionally, for the deaths of people experiencing homelessness data, the data only includes reported deaths [@homelessdeathsdata]. Therefore, the number of deaths could be much higher as unreported deaths were excluded from the dataset.
 
 
 
@@ -152,8 +126,6 @@ plot_predictions(first_model, condition = "month_of_death") +
 ```
 
 
-
-
 # Discussion
 
 ## First discussion point {#sec-first-point}
@@ -165,47 +137,6 @@ If my paper were 10 pages, then should be be at least 2.5 pages. The discussion 
 ## Third discussion point
 
 ## Weaknesses and next steps
-
-Weaknesses and next steps should also be included.
-
-\newpage
-
-\appendix
-
-# Appendix {-}
-
-
-# Additional data details
-
-# Model details {#sec-model-details}
-
-## Posterior predictive check
-
-In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. This shows...
-
-In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
-
-
-## Diagnostics
-
-@fig-stanareyouokay-1 is a trace plot. It shows... This suggests...
-
-@fig-stanareyouokay-2 is a Rhat plot. It shows... This suggests...
-
-```{r}
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-#| label: fig-stanareyouokay
-#| fig-cap: "Checking the convergence of the MCMC algorithm"
-#| fig-subcap: ["Trace plot", "Rhat plot"]
-#| layout-ncol: 2
-
-plot(first_model, "trace")
-
-plot(first_model, "rhat")
-```
 
 
 

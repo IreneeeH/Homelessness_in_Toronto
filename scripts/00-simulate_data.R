@@ -10,7 +10,7 @@
 library(tidyverse)
 
 
-#### Simulate data ####
+#### Simulate shelter data ####
 set.seed(123) # For reproducibility 
 
 n <- 504 # Number of observations/rows in the table
@@ -18,7 +18,7 @@ n <- 504 # Number of observations/rows in the table
 # Dates for each row
 date_seq <- seq.Date(from=mdy("01-01-2018") , to=mdy("12-01-2023"), by="month")
 
-simulated_data <-
+simulated_shelter_data <-
   tibble(
     # Use 1 through to 504 to represent each id
     id = 1:504,
@@ -38,6 +38,21 @@ simulated_data <-
   )
 
 # Format the date as seen in the original data set
-simulated_data$date <- format(as.Date(simulated_data$date), "%b-%y")
+simulated_shelter_data$date <- format(as.Date(simulated_shelter_data$date), "%b-%y")
 
-simulated_data
+simulated_shelter_data
+
+
+### Simulate homeless deaths data ###
+n <- 84 # 7 years * 12 months in each year
+
+simulated_deaths_data <- 
+  tibble(
+    year = rep(x = c(2017, 2018, 2019, 2020, 2021, 2022, 2023), each = 12),
+    month = rep(x = c("January", "February", "March", "April", 
+                     "May", "June", "July", "August", "September", 
+                     "October", "November", "December"), each = 1, times = 7),
+    count = sample(1:50, n, replace=TRUE)
+    )
+
+simulated_deaths_data
