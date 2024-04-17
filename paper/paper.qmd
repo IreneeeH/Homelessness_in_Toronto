@@ -40,7 +40,7 @@ The remainder of this paper is structured as follows: the Data section details t
 and processing of Toronto shelter system and deaths of unhoused individuals data. Additionally, the section includes discussion on the measurement of the original dataset and the variables examined in this study. The following Models section discusses the regression model used and the Results section displays the tables and figures that model the data. The Discussion section draws conclusions from those tables and figures and details the importance of my findings and weaknesses of the paper.
 
 
-# Data {#sec-data}
+# Data
 
 ## Sources
 The data utilized in this paper was retrieved from the City of Toronto's Open Data Portal [@opendatatoronto]. The statistical programming language R was used to retrieve, clean, and process the data [@citeR]. In particular, the following R packages were used: `opendatatoronto` [@opendatatoronto], `tidyverse` [@tidyverse], and `dplyr` [@dplyr] for data acquisition; `janitor` [@janitor] and `arrow` [@arrow] for data cleaning and processing; `rstanarm` [@rstanarm] and `marginaleffects` [@marginaleffects] for modeling; and `ggplot2` [@ggplot2] for creating figures.
@@ -107,6 +107,7 @@ modelsummary::modelsummary(
 ```
 
 ## Relationship Between Deaths of Homeless Individuals and Months
+
 @tbl-modelresultsslopes helps with interpreting the model results in @tbl-modelresults. @tbl-modelresultsslopes suggests that in our dataset, compared to April, August tends to have around three additional deaths, December tends to have around two additional deaths, February tends to have one additional death, and so on. Most notably, compared to April, January tends to have five additional deaths–the most additional deaths out of all the months; July tends to have around four additional deaths–the second most additional deaths out of all the months; and March tends to have one less death–the least amount of additional deaths out of all the months.
 
 ```{r}
@@ -147,6 +148,7 @@ slopes(first_model) |>
 ## Average Number of Indivduals for each Age Group
 
 @fig-agegroupavg demonstrates that individuals age 25 to 44 enter shelters the most on average, followed by individuals age 45 to 64, then those under 16 and those age 16 to 24. Additionally, individuals 65 and over enter shelters the least on average. This result is expected as the cost of living in Toronto has risen significantly in recent years and individuals age 25 to 44 must have a large percentage of their income allotted to rent [@cbcliving]. This quota may be difficult to reach every month as the price of other necessities have also risen, such as grocery bills. Individuals over 65 may not choose to stay in shelters as they have other options, including retirement homes and elder care centres.
+
 ```{r}
 #| label: fig-agegroupavg
 #| fig-cap: "The average of all shelter visitors in each age group over 6 years from 2018 to 2023"
@@ -176,6 +178,7 @@ ggplot(age_group_data, aes(x = age_group, y = average, fill = age_group)) +
 ## Average Number of Actively Homeless Indivduals
 
 @fig-activelyhomeless demonstrates that the average number of actively homeless individuals increased from 2018 to 2019, significantly decreased from 2019 to 2020, remained almost unchanged from 2020 to 2021, experienced a sharp increase from 2021 to 2022, and increased more from 2022 to 2023. Additionally, the average in 2023 reached a high of almost 10500 actively homeless individuals. The housing crisis and spike in the cost of living since the COVID-19 pandemic is a notable contributing factor to the increase in homelessness and shelter usage after 2021. The significant decrease in the average number of actively homeless individuals using shelters from 2019 to 2021 can also be attributed to the pandemic: many public areas were restricted or fully closed for physical distancing purposes.
+
 ```{r}
 #| label: fig-activelyhomeless
 #| fig-cap: "The average number of actively homeless people from 2018 to 2023"
@@ -287,7 +290,7 @@ ggplot(avgs_gender_data, aes(x=date)) +
 
 # Discussion
 
-## First discussion point
+## Findings
 
 
 ## Weaknesses and next steps
