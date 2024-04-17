@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Models the predicated month effect on homeless death.
+# Purpose: Models the predicated number of deaths of homeless individuals based on the month.
 # Author: Irene Huynh
 # Date: 2 April 2024
 # Contact: irene.huynh@mail.utoronto.ca

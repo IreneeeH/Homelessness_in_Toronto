@@ -1,5 +1,5 @@
 #### Preamble ####
-# Purpose: Simulates Toronto Shelter System Flow data from 2018 to 2023.
+# Purpose: Simulates Toronto Shelter System Flow data from 2018 to 2023 and Toronto homeless deaths data.
 # Author: Irene Huynh
 # Date: 2 April 2024
 # Contact: irene.huynh@mail.utoronto.ca
