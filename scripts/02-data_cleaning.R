@@ -1,44 +1,65 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw Toronto Shelter System Flow data and Deaths of People Experiencing Homelessness data from opendatatoronto.
+# Author: Irene Huynh
+# Date: 2 April 2024
+# Contact: irene.huynh@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+
 
 #### Workspace setup ####
 library(tidyverse)
+library(janitor)
+library(dplyr)
+library(arrow)
 
-#### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+#### Clean shelter data ####
+raw_toronto_shelters_data <- read_csv("data/raw_data/raw_toronto_shelters_data.csv")
 
-#### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+cleaned_toronto_shelters_data <-
+  raw_toronto_shelters_data |> 
+  rename(date = date.mmm.yy., 
+         age_under16 = ageunder16,
+         age_16_24 = age16.24,
+         age_25_44 = age25.44,
+         age_45_64 = age45.64,
+         age_65over = age65over) |>
+  clean_names() |>
+  select(date, 
+         population_group, 
+         returned_from_housing, 
+         newly_identified, 
+         actively_homeless, 
+         age_under16, 
+         age_16_24, 
+         age_25_44, 
+         age_45_64, 
+         age_65over,
+         gender_male, 
+         gender_female)
+
+# Remove last row with NAs
+cleaned_toronto_shelters_data <- cleaned_toronto_shelters_data %>% filter(row_number() <= n()-1)
+
+
+#### Save shelter data ####
+write_csv(cleaned_toronto_shelters_data, "data/analysis_data/cleaned_toronto_shelters_data.csv")
+write_parquet(cleaned_toronto_shelters_data, "data/analysis_data/cleaned_toronto_shelters_data.parquet")
+
+
+### Clean homeless deaths data ###
+raw_homeless_deaths_data <- read_csv("data/raw_data/raw_homeless_deaths_data.csv")
+
+cleaned_homeless_deaths_data <- 
+  raw_homeless_deaths_data |>
+  rename(year_of_death = Year_of_death,
+         month_of_death = Month_of_death,
+         count = Count) |>
+  clean_names() |>
+  filter(month_of_death != "Unknown") |>
+  select(year_of_death, month_of_death, count)
+
+
+#### Save homeless deaths data ####
+write_csv(cleaned_homeless_deaths_data, "data/analysis_data/cleaned_homeless_deaths_data.csv")
+write_parquet(cleaned_homeless_deaths_data, "data/analysis_data/cleaned_homeless_deaths_data.parquet")

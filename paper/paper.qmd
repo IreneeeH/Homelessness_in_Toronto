@@ -109,22 +109,23 @@ Our results are summarized in @tbl-modelresults.
 
 ```{r}
 #| echo: false
-#| eval: true
 #| warning: false
 #| message: false
+#| eval: true
 
 library(rstanarm)
 
 first_model <-
-  readRDS(file = here::here("models/first_model.rds"))
+  readRDS(file = here::here("models/deaths_months_prediction.rds"))
 ```
 
 ```{r}
-#| echo: false
-#| eval: true
 #| label: tbl-modelresults
-#| tbl-cap: "Explanatory models of flight time based on wing width and wing length"
+#| tbl-cap: "Examining the number of e/E's as the number of words increase"
+#| tbl-pos: H
+#| echo: false
 #| warning: false
+#| eval: true
 
 modelsummary::modelsummary(
   list(
@@ -133,6 +134,21 @@ modelsummary::modelsummary(
   statistic = "mad",
   fmt = 2
 )
+```
+
+```{r}
+#| label: fig-modelresultsfig
+#| fig-cap: "The predicted number of e/E's in each line based on the number of words"
+#| echo: false
+#| warning: false
+#| eval: true
+
+library(marginaleffects)
+
+plot_predictions(first_model, condition = "month_of_death") +
+  labs(x = "Month",
+       y = "Number of Actively Homeless") +
+  theme_classic()
 ```
 
 
@@ -169,26 +185,6 @@ In @fig-ppcheckandposteriorvsprior-1 we implement a posterior predictive check. 
 
 In @fig-ppcheckandposteriorvsprior-2 we compare the posterior with the prior. This shows... 
 
-```{r}
-#| eval: true
-#| echo: false
-#| message: false
-#| warning: false
-#| label: fig-ppcheckandposteriorvsprior
-#| layout-ncol: 2
-#| fig-cap: "Examining how the model fits, and is affected by, the data"
-#| fig-subcap: ["Posterior prediction check", "Comparing the posterior with the prior"]
-
-pp_check(first_model) +
-  theme_classic() +
-  theme(legend.position = "bottom")
-
-posterior_vs_prior(first_model) +
-  theme_minimal() +
-  scale_color_brewer(palette = "Set1") +
-  theme(legend.position = "bottom") +
-  coord_flip()
-```
 
 ## Diagnostics
 
