@@ -2,7 +2,7 @@
 title: "An Analysis of the Demographics of Toronto's Homeless Population and the Relationship Between the Number Deaths of Homeless Individuals Based on the Month"
 author: 
   - Irene Huynh
-thanks: "Code and data are available at: LINK."
+thanks: "Code and data are available at: https://github.com/IreneeeH/Homelessness_in_Toronto.git"
 date: today
 date-format: long
 abstract: "Toronto’s shelter system and homeless population has experienced a significant increase over recent years. Using Toronto’s shelter system data and deaths of people experiencing homelessness data from the City of Toronto's Open Data Portal, this paper analyzes when deaths most frequently occur in Toronto’s homeless population and the trends of different demographics that utilized shelters from 2018 to 2023. This paper studies the month of death of unhoused individuals, the age group that visits shelters the most, the trend of the average number of individuals who are actively homeless using shelters, the average number of people who return to shelters after acquiring housing, and the gap separating the average number of male and female shelter users from 2018 to 2023. This paper finds that deaths of unhoused individuals occur most frequently in January and July. Additionally, males and individuals aged 25 to 44 account for a significantly larger portion of shelter users. This study may be employed to inform policy makers of the demographic most at risk of homelessness and of where to target solutions for tackling the underlying issue of homelessness in Toronto."
