@@ -1,5 +1,5 @@
 ---
-title: "An Analysis of the Demographics of Toronto's Homeless Population and the Relationship Between the Number Deaths of Homeless Individuals Based on the Month"
+title: "An Analysis of the Demographics of Toronto's Homeless Population and the Relationship Between the Number of Deaths of Homeless Individuals Based on the Month"
 author: 
   - Irene Huynh
 thanks: "Code and data are available at: https://github.com/IreneeeH/Homelessness_in_Toronto.git"
@@ -134,7 +134,7 @@ slopes(first_model) |>
 
 ```{r}
 #| label: fig-modelresultsfig
-#| fig-cap: "The predicted number deaths of homeless individuals based on the month"
+#| fig-cap: "The predicted number of deaths of homeless individuals based on the month"
 #| echo: false
 #| warning: false
 #| eval: true
